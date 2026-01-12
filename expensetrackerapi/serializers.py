@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import MyUser
+from .models import MyUser, Expenses
 from django.contrib.auth import authenticate
 
 User = get_user_model()
@@ -45,3 +45,13 @@ class LoginSerializer(serializers.Serializer):
 
         data['user'] = user
         return data
+
+
+class ExpensesSerializer(serializers.ModelSerializer):
+    # We explicitly include the currency if you want the API to show/allow it
+    amount_currency = serializers.CharField(source='amount.currency', read_only=True)
+
+    class Meta:
+        model = Expenses
+        fields = ['id', 'description', 'amount', 'amount_currency', 'category', 'date']
+        read_only_fields = ['user']
